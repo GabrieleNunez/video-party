@@ -1,0 +1,12 @@
+/**** Basic Declarations ****/
+div.row { max-width:100%; }
+div.row > div.row { max-width:100%; }
+
+form.bronco-form { padding: 1rem; }
+form.bronco-form fieldset { padding: .5rem; }
+form.bronco-form div.field  { font-size: .81rem; }
+form.bronco-form div.field label { text-align:right; color: #ebebeb; font-weight:bold; font-size: 1rem; }
+form.bronco-form div.field input { display:inline-block; width:100%; height:2rem; }
+form.bronco-form div.field input:first-of-type + input { width: 50%; }
+form.bronco-form div.field input:last-of-type ~ input { width:50%; }
+form.bronco-form div.field p.likeinput { margin:0;  padding:0; line-height:2rem; }

@@ -1,0 +1,6 @@
+logs/access.log
+logs/errors.log
+access.log
+logs/*
+*.ts
+*.m3u8
