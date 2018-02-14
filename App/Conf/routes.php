@@ -9,6 +9,8 @@ use Library\Request;
 
 // Basic Site routes
 Router::get('/', 'SiteController@home_get');
+Router::get('/chat','SiteController@chat_get');
+Router::post('/chat','SiteController@chat_post');
 
 // Generic bad route exception
 ErrorHandler::Hook('RouteException', function($exception) {

@@ -23,6 +23,10 @@ class Database {
 		return self::$connections[$connection];
 	}
 
+	public static function escape($val) {
+		return self::$connections['default']->real_escape_string($val);
+	}
+
 	public static function setInfo($info){
 		if(self::$sql !== false){
 			self::$sql->close();

@@ -14,11 +14,7 @@ class Controller {
                                  
 	protected $linked_templates = array();
                                     
-	protected $variables = array('title' => 'Page Title Here', 
-								 'maintab' => 'some',
-								 'lqImages' => array(),
-								 'hqImages' => array(),
-								 'copyright' => 'Copyright &copy;'); // template variables
+	protected $variables = array(); // template variables
 	
 	private $response_errors = array(
 		'400' => 'HTTP/1.0 400 Bad Request',

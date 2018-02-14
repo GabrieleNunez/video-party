@@ -61,7 +61,7 @@ class SQLBuilder {
 
 	// join tables together
 	public function join($table,$c1, $c2,$type = 'INNER'){
-		$this->joins[] = array('type' => $type, 'table' => $table, 'column1' => $c1, 'column2' => $column2);
+		$this->joins[] = array('type' => $type, 'table' => $table, 'column1' => $c1, 'column2' => $c2);
 		return $this;
 	}
 
@@ -233,7 +233,7 @@ class SQLBuilder {
 		$query_items = array();	
 
 		// query the database
-		$raw_results = $this->sql->query($statement);
+		$raw_results = $this->sql->query($query);
 		if($this->sql->errno)
 			throw new SQLException($query."\n"."CODE: ".$this->sql->error);
 

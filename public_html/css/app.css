@@ -7,13 +7,10 @@ html, body { margin:0; padding:0; border:none; width:100%; height:100%; font-siz
 a { color : #0000FF; }
 a:hover { text-decoration: underline; color: #0000FF; }
 
-
 /* generic styles  for foundation */
-div.row.maximum { max-width: 100%; width:75rem; }
+div.row.maximum { max-width: 100%; width:100%; }
 div.wrap { position:relative; }
 .row .row { max-width:100%; }
-
-div#videobackground { background-image: url('/images/VideoFirstFrame.jpg');  }
 
 div#wrapper { position:relative; top:0;  }
 
@@ -83,6 +80,13 @@ div.content-section { padding: 2rem 0; }
 
 hr { max-width: 75rem; }
 
+
+div.video-js { width:100%; min-height:30rem; }
+ul#chatMessages { height:21rem; width:100%; margin:0; padding:0; display:block; overflow:auto; }
+ul#chatMessages { list-style:none; }
+ul#chatMessages li { word-break: break-all; }
+ul#chatMessages li span.username { color: red; }
+ul#chatMessages li span.divider { margin:0 .25rem; }
 
 /* tablet only */
 @media only screen and (min-width:40.063em) and (max-width:64em) {

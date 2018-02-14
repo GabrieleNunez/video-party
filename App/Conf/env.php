@@ -26,7 +26,7 @@ $env = array(
 	'folders' => array(
 		'views' => '../App/Views',
 		'public' => '../public_html/',
-		'migration' => '../Migration/',zs
+		'migration' => '../Migration/',
 	),
 	'files' => array(
 		'routes' => '../App/Conf/routes.php',

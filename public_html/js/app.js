@@ -7,11 +7,78 @@ $(document).ready(function(){
 	$("video.video-js").each(function(index, item) {
 		var player = videojs(item);
 		player.play();
+
+		$(item).sync_player();
+	});
+
+
+	$("div#chatwindow").each(function(index, item){
+		console.log("Chat Window FOund");
+		$(item).chat_window();
+	});
+
+	$("form#chatForm").ajaxForm({
+		sucess: function(status) {
+			alert("Sent");
+		},
+		error : function(error_data) {
+			alert("An intenral error has occurred");
+		}
 	});
 });
 
+
+// create a syncronized player
+$.fn.sync_player = function() {
+	return this;
+}
+
+// wrap a chat window into one jquery plugin
+$.fn.chat_window = function() {
+
+	var list = $(this).find("ul#chatMessages").first();
+
+	var last_message_id = 0;
+	var written_messages = {};
+	setInterval(function(){
+
+		$.ajax({
+			url : "/chat",
+			method : "GET",
+			data : {
+				last_message_id : last_message_id
+			},
+			dataType : "json",
+			success : function(status) {
+				if(status.success) {
+					for(var message_index in status.response.messages) {
+						var message = status.response.messages[message_index];
+						if(typeof written_messages[message.message_id] == "undefined") {
+							last_message_id = message.message_id;
+							$(list).append('<li><span class="username">' 
+											+ message.username 
+											+ '</span><span class="divider">:</span><span class="message">' 
+											+ message.message 
+											+ '</span></li>');
+							written_messages[message.message_id] = true;
+						}
+					}
+				}
+			},
+			error : function() {
+				console.log("An internal error has occurred");
+			}
+		});
+
+	}, 1500);
+
+	return this;
+}
+
+
 // adjust a button to indictate success
 $.fn.button_success = function(textoutput, disabled) {
+
 	var textoutput = typeof textoutput == "undefined" ? $(this).text() : textoutput;
 	var disabled = typeof disabled == "undefined" ? true : disabled;
 
