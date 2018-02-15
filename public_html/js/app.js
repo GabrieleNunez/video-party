@@ -1,37 +1,207 @@
+
+var is_syncing = false;
+var ignore_update = false;
+var missed_updates = 0;
+
+var fast_messages = 0;
+
 $(document).ready(function(){
 
 	// initialize foundation 
 	$(document).foundation();
 
+	// home page scripts
+	if($("div#homepage").length > 0) {
+		// video js
+		$("video.video-js").each(function(index, item) {
+			var player = videojs(item);
+			player.play();
 
-	$("video.video-js").each(function(index, item) {
-		var player = videojs(item);
-		player.play();
+			// are we a master control
+			var is_master = $(item).data("master") == "1" ? true : false;
+			var current_timestamp = $(item).data("current");
+			console.log("IS MASTER : " + is_master);
+			$(item).sync_player(player, is_master, current_timestamp);
+		});
 
-		$(item).sync_player();
-	});
+
+		$("div#chatwindow").each(function(index, item){
+			console.log("Chat Window FOund");
+			$(item).chat_window();
+		});
+
+		$("form#chatForm").ajaxForm({
+			success: function(status) {
+				$('input#message').val('');
+			},
+			error : function(error_data) {
+				alert("An intenral error has occurred");
+			}
+		});
+	}
 
 
-	$("div#chatwindow").each(function(index, item){
-		console.log("Chat Window FOund");
-		$(item).chat_window();
-	});
+	// we are on the login page
+	if($("div#loginPage").length > 0) {
+		$("form#loginForm").ajaxForm({
+			success : function(status) {
+				if(status.success) {
+					$("form#chatForm button").first().button_success("Success! Logging in");
+					window.location.href = "/";
+				} else {
+					$("form#chatForm button").first().button_failure("Unable to login");
+				}
+			},
+			error : function(status) {
+				$("form#chatForm button").first().button_failure("An internal error has occurred");
+			}
+		})
+	}
 
-	$("form#chatForm").ajaxForm({
-		sucess: function(status) {
-			alert("Sent");
-		},
-		error : function(error_data) {
-			alert("An intenral error has occurred");
-		}
-	});
+	
 });
 
 
 // create a syncronized player
-$.fn.sync_player = function() {
+$.fn.sync_player = function(video_player, is_master, current_timestamp) {
+
+	var current_timestamp = current_timestamp;
+	var video_player = video_player;
+	is_syncing = false;
+	ignore_update = false;
+	missed_updates = 0;
+
+	if(is_master) {
+
+		// once we load our metadata go ahead and setup our constant timer
+		video_player.one('loadedmetadata', function() {
+			video_player.currentTime(current_timestamp);
+			setInterval(function() {
+				send_sync_state(video_player);
+			}, 300); 
+
+		});
+
+
+
+	}   else {
+		//fetch the current sync state 
+		setInterval(function() {
+
+			if(missed_updates > 10) {
+				is_syncing = false;
+				missed_updates = 0;
+			}
+
+			if(is_syncing === false)
+				get_sync_state(video_player);
+			else
+				missed_updates++;
+			
+
+		}, 300);
+	}
+	
+
 	return this;
 }
+
+
+// send the current sync as the master
+function send_sync_state(video_player) {
+	
+	var video_player = video_player;
+	var player_state = video_player.paused() ? 0 : 1;
+	var current_video_time = video_player.currentTime();
+
+	$.ajax({
+		url : '/sync',
+		method : 'POST',
+		data : {
+			current : current_video_time,
+			state : player_state
+		},
+		dataType : "json",
+		beforeSend : function() {
+			is_syncing = true;
+		},
+		success : function(status) {
+			console.log("Synced Setting");
+
+		},
+		error : function(status) {
+			console.log("Unable to send sync");
+		},
+		complete : function() {
+			is_syncing = false;
+		}
+	});
+
+}
+
+// get the current sync set
+function get_sync_state(video_player) {
+	
+	var video_player = video_player;
+	var player_state = video_player.paused() ? 0 : 1;
+	var current_video_time = video_player.currentTime();
+
+	// only ally get_sync_state to be ignored ONE time in a set of cycles
+	if(ignore_update) {
+		ignore_update = false;
+		return;
+	}
+
+	$.ajax({
+		url : '/sync',
+		method : 'GET',
+		data : {
+			current : current_video_time,
+			state : player_state
+		},
+		dataType : 'json',
+		success : function(status) {
+
+			if(status.success) {
+
+				// status is different then what we currently have
+				if(status.response.state != player_state) {
+
+					if(status.response.state == 0) { // master state is paused
+						video_player.currentTime(status.response.time);
+						video_player.pause();
+						ignore_update = true;
+					} else if(status.response.state == 1) {
+						video_player.currentTime(status.response.time);
+						video_player.play();
+
+						ignore_update = true;
+					}
+				}
+
+				// our current time is not the same. Try to find out if it should be fixed
+				if(status.response.time != current_video_time) {
+
+					var diff = status.response.time - current_video_time;
+					if(diff > 6 || diff < 0) { // if greater then 30 seconds force seek to the new position
+						video_player.currentTime(status.response.time);
+						ignore_update = true;
+					}
+
+
+				}
+
+
+			}
+		},
+		error : function(status) {
+			console.log("Unable to fetch sync information")
+		}
+	});
+
+
+}
+
 
 // wrap a chat window into one jquery plugin
 $.fn.chat_window = function() {
@@ -40,8 +210,10 @@ $.fn.chat_window = function() {
 
 	var last_message_id = 0;
 	var written_messages = {};
+
 	setInterval(function(){
 
+		var new_message = false;
 		$.ajax({
 			url : "/chat",
 			method : "GET",
@@ -55,13 +227,24 @@ $.fn.chat_window = function() {
 						var message = status.response.messages[message_index];
 						if(typeof written_messages[message.message_id] == "undefined") {
 							last_message_id = message.message_id;
+
+							if($(list).find("li").length > 30)
+								$(list).find("li").first().remove();
+
 							$(list).append('<li><span class="username">' 
 											+ message.username 
 											+ '</span><span class="divider">:</span><span class="message">' 
 											+ message.message 
 											+ '</span></li>');
 							written_messages[message.message_id] = true;
+
+							new_message = true;
 						}
+					}
+
+					if(new_message) {
+						var myDiv = list;
+						myDiv.animate({ scrollTop: myDiv.prop("scrollHeight") - myDiv.height() }, 250);
 					}
 				}
 			},
@@ -70,7 +253,7 @@ $.fn.chat_window = function() {
 			}
 		});
 
-	}, 1500);
+	}, 500);
 
 	return this;
 }

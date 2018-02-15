@@ -11,6 +11,11 @@ use Library\Request;
 Router::get('/', 'SiteController@home_get');
 Router::get('/chat','SiteController@chat_get');
 Router::post('/chat','SiteController@chat_post');
+Router::get('/sync','SiteController@sync_get');
+Router::post('/sync','SiteController@sync_post');
+Router::get('/login','SiteController@login_get');
+Router::post('/login','SiteController@login_post');
+Router::get('/logout','SiteController@logout_get');
 
 // Generic bad route exception
 ErrorHandler::Hook('RouteException', function($exception) {

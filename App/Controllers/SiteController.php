@@ -5,6 +5,7 @@ use Library\View;
 use Library\Application;
 use Library\Request;
 use Library\Database;
+use Library\Session;
 
 // include library
 use App\Controllers\Controller;
@@ -23,21 +24,106 @@ class SiteController extends Controller {
 
 	}
 
+	public function logout_get($in) {
+		Session::flush();
+		$this->redirect('/login');
+	}
+
+	// login
+	public function login_get($in) {
+
+		// load the ticket code from the session.
+		$ticket_code = Session::read('ticket_code');
+		if($ticket_code !== false) { // we found one, lets validate and redirect if its legit
+
+			// search for the ticket
+			$ticket = Ticket::select(array('id'))->where('code', $ticket_code)->limit(1)->get(true);
+			if($ticket) {
+				$this->redirect('/');
+				exit;
+			}
+
+
+		}
+
+		$this->variable('title','Level Crush - Member Lounge Login');
+		$this->variable('maintab', 'login');
+		$this->content_view('/site/login.php');
+		$this->render_template();
+	}
+
+	// attempt to login and set session variables!
+	public function login_post($in) {
+
+
+		// we are expecting a response
+		$request = new Request('POST', array('code'));
+		$missing = $request->get_missing();
+		if($missing) {
+			$this->bad_request();
+			exit;
+		}
+
+		// lightly validate the ticket code
+		$ticket_code = $request->get('code');
+		if(strlen($ticket_code) === 0)
+			$this->error('code','Please specify a ticket code');
+
+		// no errors lets hit the database
+		if(!$this->has_errors()) {
+			$ticket = Ticket::select(array('id'))->where('code', $ticket_code,'=')->limit(1)->get(true);
+			if(!$ticket) {
+				$this->error('code','This is not a valid ticket, sorry.');
+			} else {
+				Session::write('ticket_code',$ticket_code);
+				$this->variable('validated',true);
+			}
+		}
+
+
+
+		$this->render_json();
+
+	}	
 
 	// pulls up a home page
 	public function home_get($in) {
 
 		// set the following variables
-		$this->variable('title', 'Level Crush - Movie');
+		$this->variable('title', 'Level Crush - Member');
 
 		// set the main tab to home
 		$this->variable('maintab','');
 		$this->variable('maintab','home');
 
-		// for now hardcode everyone to be this code
-		$ticket = Ticket::select(array('code'))->where('id',1,'=')->limit(1)->get(true);
-		$ticket_code = $ticket['code'];
+		// make sure we are loaded with a valid ticket
+		$ticket = array();
+		$ticket_code = Session::read('ticket_code');
+		if($ticket_code === false) {
+			
+			$this->redirect('/login');
+			exit;
+
+		} else {
+
+			$ticket = Ticket::select(array('id','code','username','master'))->where('code',$ticket_code,'=')->limit(1)->get(true);
+			if(!$ticket) {
+				$this->redirect('/login');
+				exit;
+			}
+		}
+
+		// set ticket code
+		$this->variable('ticket_master', $ticket['master'] ? true : false);
+		$this->variable('ticket_username', $ticket['username']);
 		$this->variable('ticket_code', $ticket_code);
+
+
+		// player sync
+		$player_sync = PlayerSync::select(array('*'))->limit(1)->get(true);	
+		$this->variable('player_state', $player_sync['state']);
+		$this->variable('player_time', $player_sync['current']);
+
 
 		// render template
 		$this->content_view('/site/home.php');
@@ -75,7 +161,7 @@ class SiteController extends Controller {
 										 AND chat_messages.deleted_at = 0
 										 AND chat_messages.id > "'.Database::escape($last_message_id).'"
 										 ORDER BY chat_messages.id DESC
-										 LIMIT 10
+										 LIMIT 30
 									) AS messages
 									ORDER BY message_id ASC
 									');
@@ -142,6 +228,37 @@ class SiteController extends Controller {
 
 	}
 
+	// sync get
+	public function sync_get($in) {
+
+		
+		// player sync
+		$player_sync = PlayerSync::select(array('*'))->limit(1)->get(true);	
+		$this->variable('state', $player_sync['state']);
+		$this->variable('time', $player_sync['current']);
+		$this->render_json();
+
+	}
+
+	// update player syncronization status0
+	public function sync_post($in) {
+
+		$request = new Request('POST', array('current', 'state'));
+		$missing = $request->get_missing();
+		if($missing) {
+			$this->bad_request(true);
+			exit;
+		}
+
+		// update player information
+		$player_sync = PlayerSync::select(array('*'))->limit(1)->get();
+		$player_sync->current = $request->get('current');
+		$player_sync->state = $request->get('state');
+		$player_sync->save();
+
+
+		$this->render_json();
+	}
 
 }
 
