@@ -68,9 +68,6 @@ button.error:focus { background-color : #A12900; }
 
 div.content-section { padding: 2rem 0; }
 
-
-
-
 /* font settings */
 .green { color : #008000;  }
 .red { color: #C53200;  }
@@ -82,10 +79,14 @@ div.content-section { padding: 2rem 0; }
 hr { max-width: 75rem; }
 
 
-div.video-js { width:100%; min-height:30rem; }
+/* video player settings */
+div.video-js { width:100%; max-width:1280px; max-height:720px; }
 div.video-js.watcher button.vjs-play-control,
 div.video-js.watcher div.vjs-progress-control { display:none; }
 
+
+
+/* chat window settings */
 ul#chatMessages { height:21rem; width:100%; margin:0; padding:0; display:block; overflow:auto; border-top: solid 1px #cacaca; padding:.25rem 0; }
 ul#chatMessages { list-style:none; }
 ul#chatMessages li { word-break: break-all; }
@@ -96,6 +97,7 @@ div#chatwindow form#chatForm hr { margin-top:0; }
 
 
 div.padding { padding: 2rem 0; }
+
 
 /* tablet only */
 @media only screen and (min-width:40.063em) and (max-width:64em) {

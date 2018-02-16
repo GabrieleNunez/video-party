@@ -1,10 +1,10 @@
 <div id="homepage">
 	<div class="padding">
-		<div class="row maximum">
+		<div class="row maximum expanded">
 			<div class="small-12 medium-12 large-8 columns">
 				<div class="videoplayer" id="videoplayer">
-					<video data-current="<?php echo $player_time; ?>" class="video-js <?php echo $ticket_master ? '' : 'watcher'; ?>" preload="auto" controls="controls" <?php echo $ticket_master ? 'data-master="1"' : 'data-master="0"'; ?>>
-						<source src="/movie1/movie1.m3u8" type="application/x-mpegURL"></source>
+					<video data-stream-file="<?php echo $player_stream_file;?>" data-current="<?php echo $player_time; ?>" class="video-js <?php echo $ticket_master ? '' : 'watcher'; ?>" preload="auto" controls="controls" <?php echo $ticket_master ? 'data-master="1"' : 'data-master="0"'; ?>>
+						<source src="<?php echo $player_stream_file; ?>" type="application/x-mpegURL"></source>
 					</video>
 				</div>
 			</div>

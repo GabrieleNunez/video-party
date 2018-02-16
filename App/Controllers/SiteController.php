@@ -123,6 +123,7 @@ class SiteController extends Controller {
 		$player_sync = PlayerSync::select(array('*'))->limit(1)->get(true);	
 		$this->variable('player_state', $player_sync['state']);
 		$this->variable('player_time', $player_sync['current']);
+		$this->variable('player_stream_file', $player_sync['stream_file']);
 
 
 		// render template
@@ -236,6 +237,7 @@ class SiteController extends Controller {
 		$player_sync = PlayerSync::select(array('*'))->limit(1)->get(true);	
 		$this->variable('state', $player_sync['state']);
 		$this->variable('time', $player_sync['current']);
+		$this->variable('stream_file',$player_sync['stream_file']);
 		$this->render_json();
 
 	}
@@ -250,11 +252,24 @@ class SiteController extends Controller {
 			exit;
 		}
 
+		// find the ticket code matching the session
+		$ticket_code = Session::read('ticket_code');
+		$ticket = Ticket::select(array('*'))->where('code', $ticket_code,'=')->where('master','1')->limit(1)->get(true);
+		if(!$ticket) {
+			$this->bad_request();
+			exit;
+		}
+
 		// update player information
 		$player_sync = PlayerSync::select(array('*'))->limit(1)->get();
 		$player_sync->current = $request->get('current');
 		$player_sync->state = $request->get('state');
 		$player_sync->save();
+
+		$player_sync = $player_sync->to_array();
+		$this->variable('state', $player_sync['state']);
+		$this->variable('time', $player_sync['current']);
+		$this->variable('stream_file',$player_sync['stream_file']);
 
 
 		$this->render_json();

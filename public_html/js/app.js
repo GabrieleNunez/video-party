@@ -4,6 +4,7 @@ var ignore_update = false;
 var missed_updates = 0;
 
 var fast_messages = 0;
+var current_stream_file = '';
 
 $(document).ready(function(){
 
@@ -14,12 +15,21 @@ $(document).ready(function(){
 	if($("div#homepage").length > 0) {
 		// video js
 		$("video.video-js").each(function(index, item) {
-			var player = videojs(item);
+			
+			var player = videojs(item, {
+				autoplay : false,
+				preload : "auto",
+				controls : true,
+				loop : true
+			});
+
 			player.play();
 
 			// are we a master control
 			var is_master = $(item).data("master") == "1" ? true : false;
 			var current_timestamp = $(item).data("current");
+			current_stream_file = $(item).data("stream-file");
+
 			console.log("IS MASTER : " + is_master);
 			$(item).sync_player(player, is_master, current_timestamp);
 		});
@@ -128,6 +138,14 @@ function send_sync_state(video_player) {
 		success : function(status) {
 			console.log("Synced Setting");
 
+			// determine if we need to adjust the file we are in
+			if(status.response.stream_file != current_stream_file) {
+				current_stream_file = status.response.stream_file;
+				video_player.src({ type: "application/x-mpegURL", src : current_stream_file });
+				video_player.play();
+			}
+
+
 		},
 		error : function(status) {
 			console.log("Unable to send sync");
@@ -175,6 +193,7 @@ function get_sync_state(video_player) {
 						video_player.currentTime(status.response.time);
 						video_player.play();
 
+						//
 						ignore_update = true;
 					}
 				}
@@ -188,9 +207,14 @@ function get_sync_state(video_player) {
 						ignore_update = true;
 					}
 
+				}	
 
+				// determine if we need to adjust the file we are in
+				if(status.response.stream_file != current_stream_file) {
+					current_stream_file = status.response.stream_file;
+					video_player.src({ type: "application/x-mpegURL", src : current_stream_file });
+					video_player.play();
 				}
-
 
 			}
 		},
