@@ -1,7 +1,7 @@
 <?php
 $env = array(
 	'debug' => true,
-	'domain' => 'lounge.levelcrush.com',
+	'domain' => 'members.levelcrush.com',
 	'owner' =>  array(
 		'name' => 'Level Crush',
 		'email' => 'g_m_nunez@live.com', // for now this will simply be Gabriele Nunez's email ( the maintainer ) 

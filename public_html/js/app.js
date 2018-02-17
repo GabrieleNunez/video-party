@@ -6,6 +6,21 @@ var missed_updates = 0;
 var fast_messages = 0;
 var current_stream_file = '';
 
+var chat_colors = [
+	'#1abc9c',
+	'#2ecc71',
+	'#3498db',
+	'#9b59b6',
+	'#e91e63',
+	'#f1c40f',
+	'#e67e22',
+	'#e74c3c',
+	'#95a5a6'
+];
+
+
+var chatter_colors = {};
+
 $(document).ready(function(){
 
 	// initialize foundation 
@@ -13,6 +28,7 @@ $(document).ready(function(){
 
 	// home page scripts
 	if($("div#homepage").length > 0) {
+
 		// video js
 		$("video.video-js").each(function(index, item) {
 			
@@ -30,7 +46,6 @@ $(document).ready(function(){
 			var current_timestamp = $(item).data("current");
 			current_stream_file = $(item).data("stream-file");
 
-			console.log("IS MASTER : " + is_master);
 			$(item).sync_player(player, is_master, current_timestamp);
 		});
 
@@ -47,6 +62,33 @@ $(document).ready(function(){
 			error : function(error_data) {
 				alert("An intenral error has occurred");
 			}
+		});
+
+
+		$("a.slide-button").on("click", function(event) {
+			event.preventDefault();
+
+			var target_slide = $(this).data("slide");
+			var first_slide = $("div.slide").first(); // get the first slide 
+
+			var slide_element = $("#" + target_slide);
+
+			var slide_visible = $("#" + target_slide).is(":visible");
+
+			if(slide_visible) {
+				$("div.slide").hide();
+				$(first_slide).show();
+
+				console.log("slide visible, hiding and showing first slide");
+			} else {
+
+				console.log("showing target slide");
+				console.log(target_slide);
+				$("div.slide").hide();
+				$(slide_element).show();
+			}
+
+			return false;
 		});
 	}
 
@@ -95,6 +137,7 @@ $.fn.sync_player = function(video_player, is_master, current_timestamp) {
 
 
 	}   else {
+
 		//fetch the current sync state 
 		setInterval(function() {
 
@@ -111,7 +154,61 @@ $.fn.sync_player = function(video_player, is_master, current_timestamp) {
 
 		}, 300);
 	}
-	
+
+
+	// get viewerlist
+	setInterval(function() {
+
+		$.ajax({
+			url : "/viewerlist",
+			method : "GET",
+			data : {},
+			dataType : "json",
+			success : function(status) {
+
+				if(status.success) {
+					
+					var total_viewers = 0;
+					var current_viewers = [];
+
+
+					for(var index in status.response.viewers) {
+						var viewer = status.response.viewers[index];
+						current_viewers.push(viewer.username);	
+					}
+
+
+					// grab our vieer list item
+					var viewer_list = $("ul#viewerlist");
+					viewer_list.empty();
+
+					// sort them alphabetically
+					current_viewers.sort();
+					var last_element = null;
+					for(var i = 0; i < current_viewers.length; i++) {
+
+						//  prepare to insert
+						var list_item = $('<li data-username="' + current_viewers[i] + '">' + current_viewers[i] + '</li>');
+						list_item.data("username", list_item);
+						viewer_list.append(list_item);
+
+						total_viewers++;
+
+					}
+
+					// set the total viewers
+					$("#viewers").text(parseInt(total_viewers));
+
+				}
+			}
+		})
+
+	}, 3000);
+
+	// remove from viewerlist
+	$(window).on("beforeunload", function() {
+		navigator.sendBeacon('/viewerlist',"state=leaving");
+	});	
 
 	return this;
 }
@@ -226,6 +323,13 @@ function get_sync_state(video_player) {
 
 }
 
+	
+// get random chat color
+function assign_random_color(username) {
+	var color =  chat_colors[Math.floor(Math.random()*chat_colors.length)];
+	chatter_colors[username] = color;
+	return color;
+}
 
 // wrap a chat window into one jquery plugin
 $.fn.chat_window = function() {
@@ -234,6 +338,7 @@ $.fn.chat_window = function() {
 
 	var last_message_id = 0;
 	var written_messages = {};
+
 
 	setInterval(function(){
 
@@ -251,11 +356,12 @@ $.fn.chat_window = function() {
 						var message = status.response.messages[message_index];
 						if(typeof written_messages[message.message_id] == "undefined") {
 							last_message_id = message.message_id;
+							var username_color = typeof chatter_colors[message.username] != "undefined" ? chatter_colors[message.username] : assign_random_color(message.username);
 
 							if($(list).find("li").length > 30)
 								$(list).find("li").first().remove();
 
-							$(list).append('<li><span class="username">' 
+							$(list).append('<li><span class="username" style="color:' +  username_color + ';">' 
 											+ message.username 
 											+ '</span><span class="divider">:</span><span class="message">' 
 											+ message.message 

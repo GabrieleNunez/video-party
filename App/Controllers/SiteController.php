@@ -12,6 +12,7 @@ use App\Controllers\Controller;
 use App\Models\ChatMessage;
 use App\Models\PlayerSync;
 use App\Models\Ticket;
+use App\Models\Viewer;
 
 class SiteController extends Controller {
 
@@ -126,7 +127,24 @@ class SiteController extends Controller {
 		$this->variable('player_stream_file', $player_sync['stream_file']);
 
 
-		// render template
+
+		// make sure to add them into the watcher list 
+		$viewer = Viewer::select(array('viewerlist.id'))->where('viewerlist.ticket', $ticket['id'])->limit(1)->get(true);
+		if(!$viewer) {
+
+			$viewer = new Viewer();
+			$viewer->assign(array(
+				'id' => null,
+				'ticket' => $ticket['id']
+			));
+			$viewer->save();
+
+		} 
+
+		// pull all viewers 
+		$viewers = Viewer::select(array('tickets.username'))->join('tickets','viewerlist.ticket','tickets.id')->orderBy('tickets.username','ASC')->get(true);
+		$this->variable('viewers', $viewers);
+
 		$this->content_view('/site/home.php');
 		$this->render_template();
 
@@ -176,14 +194,12 @@ class SiteController extends Controller {
 	public function chat_post($in) {
 
 
-		$request = new Request('POST', array('ticket','message'));
+		$request = new Request('POST', array('message'));
 		$missing = $request->get_missing();
 		if($missing) {
 			$this->bad_request(true);
 			exit;
 		}
-
-		$ticket_id = $request->get('ticket');
 		$message = $request->get('message');
 
 		// lightly parse message
@@ -193,19 +209,24 @@ class SiteController extends Controller {
 			$this->error('message','This message must not exceed 255 characters');
 
 
-		if($ticket_id === null || strlen($ticket_id) === 0)
-			$this->error('ticket', 'Please submit a valid ticket id');
 
+		// find the ticket code matching the session
+		$ticket_code = Session::read('ticket_code');
+		$ticket_id = 0;
 
-
-		// find the ticket information
-		$ticket = array();
+		// make sure we can go ahead and attempt to fetch our ticket
 		if(!$this->has_errors()) {
-			$ticket = Ticket::select(array('id'))->where('code', $ticket_id)->limit(1)->get(true);
-			if(!$ticket)
-				$this->error('ticket','Please submit a valid ticket id');
+			$ticket = Ticket::select(array('*'))->where('code', $ticket_code,'=')->limit(1)->get(true);
+			if(!$ticket) {
+				$this->bad_request();
+				exit;
+			}
 
+			$ticket_id = $ticket['id'];
 		}
+
+		
+
 
 		if(!$this->has_errors()) {
 
@@ -233,6 +254,15 @@ class SiteController extends Controller {
 	public function sync_get($in) {
 
 		
+		// find the ticket code matching the session
+		$ticket_code = Session::read('ticket_code');
+		$ticket = Ticket::select(array('*'))->where('code', $ticket_code,'=')->limit(1)->get(true);
+		if(!$ticket) {
+			$this->bad_request();
+			exit;
+		}
+
+
 		// player sync
 		$player_sync = PlayerSync::select(array('*'))->limit(1)->get(true);	
 		$this->variable('state', $player_sync['state']);
@@ -272,6 +302,71 @@ class SiteController extends Controller {
 		$this->variable('stream_file',$player_sync['stream_file']);
 
 
+		$this->render_json();
+	}
+
+
+	public function viewerlist_get() {
+
+		// find the ticket code matching the session
+		$ticket_code = Session::read('ticket_code');
+		$ticket = Ticket::select(array('*'))->where('code', $ticket_code,'=')->limit(1)->get(true);
+		if(!$ticket) {
+			$this->bad_request();
+			exit;
+		}
+
+
+		// pull all viewers 
+		$viewers = Viewer::select(array('tickets.username'))->join('tickets','viewerlist.ticket','tickets.id')->orderBy('tickets.username','ASC')->get(true);
+		$this->variable('viewers', $viewers);
+
+
+		$this->render_json();	
+	}
+
+	public function viewerlist_post() {
+
+
+		// 
+		$request = new Request('POST', array('state'));
+		$missing = $request->get_missing();
+		if($missing) {
+			$this->bad_request(true);
+			exit;
+		}
+
+		// find the ticket code matching the session
+		$ticket_code = Session::read('ticket_code');
+		$ticket = Ticket::select(array('*'))->where('code', $ticket_code,'=')->limit(1)->get(true);
+		if(!$ticket) {
+			$this->bad_request();
+			exit;
+		}
+
+
+		// if we are 
+		if($request->get('state') == 'watching') {
+			
+			$viewer = Viewer::select(array('viewerlist.id'))->where('viewerlist.ticket', $ticket['id'])->limit(1)->get(true);
+			if(!$viewer) {
+
+				$viewer = new Viewer();
+				$viewer->assign(array(
+					'id' => null,
+					'ticket' => $ticket['id']
+				));
+				$viewer->save();
+
+			} 
+		} else { // we are no longer watching. Delete this ( this is usually sent when the user leaves the page via the javascript function)
+
+			$viewer = Viewer::select(array('viewerlist.id'))->where('viewerlist.ticket', $ticket['id'])->limit(1)->get();
+			if($viewer)
+				$viewer->delete('id', $viewer->id);
+		}
+
+		$this->variable('state', $request->get('state'));
 		$this->render_json();
 	}
 

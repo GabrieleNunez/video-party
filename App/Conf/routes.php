@@ -16,6 +16,8 @@ Router::post('/sync','SiteController@sync_post');
 Router::get('/login','SiteController@login_get');
 Router::post('/login','SiteController@login_post');
 Router::get('/logout','SiteController@logout_get');
+Router::get('/viewerlist','SiteController@viewerlist_get');
+Router::post('/viewerlist','SiteController@viewerlist_post');
 
 // Generic bad route exception
 ErrorHandler::Hook('RouteException', function($exception) {

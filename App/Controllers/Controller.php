@@ -35,27 +35,27 @@ class Controller {
 	
 	protected function bad_request($force_json = false) { // Use this when you can't make sense of a request - like asking to see a user profile but not sending a user id
 		header($this->response_errors['400'], true, 400);
-		$this->renderError('400', $force_json);
+		$this->render_error('400', $force_json);
 	}
 
 	protected function unauthorized($force_json = false) { // Use this when the user is a guest or their login token is expired
 		header($this->response_errors['401'], true, 401);
-		$this->renderError('401', $force_json);
+		$this->render_error('401', $force_json);
 	}
 
 	protected function forbidden($force_json = false) { // Use this when the user is authenticated properly but they're not allowed to view this particular resource or data object
 		header($this->response_errors['403'], true, 403);
-		$this->renderError('403', $force_json);
+		$this->render_error('403', $force_json);
 	}
 
 	protected function not_found($force_json = false) { // Use this when we can't find the requested resource or when we want the user to think it doesn't exist
 		header($this->response_errors['404'], true, 404);
-		$this->renderError('404', $force_json);
+		$this->render_error('404', $force_json);
 	}
 
 	protected function internal_error($force_json = false) { // Use this when the application itself throws an error that we can't recover from and we just need to bail
 		header($this->response_errors['500'], true, 500);
-		$this->renderError('500', $force_json);
+		$this->render_error('500', $force_json);
 	}
 	
 	public function content_view($path){
@@ -130,7 +130,7 @@ class Controller {
 		$this->variables = array('status' => $error, 'message' => $status);
 		$this->errors = array();
 		if(Request::isAjax() || $force_json) {
-			$this->renderJson();
+			$this->render_json();
 		} else {
 			$this->variables = array('status' => $error, 'message' => $status);
 			echo View::make('errors/error.php')->with($this->variables);
