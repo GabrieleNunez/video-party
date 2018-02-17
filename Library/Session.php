@@ -9,10 +9,6 @@ class Session {
 	 		self::$started = true;
 	 	}
 	}
-
-	public static function print() {
-		print_r($_SESSION);
-	}
 	
 	public static function write($key, $data) {
 		self::start();

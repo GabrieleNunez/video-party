@@ -2,9 +2,14 @@
 var is_syncing = false;
 var ignore_update = false;
 var missed_updates = 0;
-
+var written_messages = {};
 var fast_messages = 0;
 var current_stream_file = '';
+var last_message_id = 0;
+var manual_message = '';
+var manual_username = '';
+
+
 
 var chat_colors = [
 	'#1abc9c',
@@ -33,13 +38,15 @@ $(document).ready(function(){
 		$("video.video-js").each(function(index, item) {
 			
 			var player = videojs(item, {
-				autoplay : false,
+				autoplay : true,
 				preload : "auto",
 				controls : true,
-				loop : true
+				loop : true,
+				muted : navigator.userAgent.match(/(iPod|iPhone|iPad)/)
 			});
 
 			player.play();
+
 
 			// are we a master control
 			var is_master = $(item).data("master") == "1" ? true : false;
@@ -56,8 +63,33 @@ $(document).ready(function(){
 		});
 
 		$("form#chatForm").ajaxForm({
+			beforeSend : function() {
+				
+				var message = { username : $("form#chatForm").data("username"), message : $("input#message").val() };
+
+				var username_color = typeof chatter_colors[message.username] != "undefined" ? chatter_colors[message.username] : assign_random_color(message.username);
+				var list = $("ul#chatMessages").first();
+
+				var username_color = typeof chatter_colors[message.username] != "undefined" ? chatter_colors[message.username] : assign_random_color(message.username);
+
+				if($(list).find("li").length > 30)
+					$(list).find("li").first().remove();
+
+				$(list).append('<li><span class="username" style="color:' +  username_color + ';">' 
+								+ message.username 
+								+ '</span><span class="divider">:</span><span class="message">' 
+								+ message.message 
+								+ '</span></li>');
+
+				manual_message = message.message;
+				manual_username = message.username;
+				
+				var myDiv = list;
+				myDiv.animate({ scrollTop: myDiv.prop("scrollHeight") - myDiv.height() }, 250);
+			},
 			success: function(status) {
 				$('input#message').val('');
+
 			},
 			error : function(error_data) {
 				alert("An intenral error has occurred");
@@ -82,8 +114,6 @@ $(document).ready(function(){
 				console.log("slide visible, hiding and showing first slide");
 			} else {
 
-				console.log("showing target slide");
-				console.log(target_slide);
 				$("div.slide").hide();
 				$(slide_element).show();
 			}
@@ -130,11 +160,9 @@ $.fn.sync_player = function(video_player, is_master, current_timestamp) {
 			video_player.currentTime(current_timestamp);
 			setInterval(function() {
 				send_sync_state(video_player);
-			}, 300); 
+			}, 500); 
 
 		});
-
-
 
 	}   else {
 
@@ -152,7 +180,7 @@ $.fn.sync_player = function(video_player, is_master, current_timestamp) {
 				missed_updates++;
 			
 
-		}, 300);
+		}, 500);
 	}
 
 
@@ -203,7 +231,7 @@ $.fn.sync_player = function(video_player, is_master, current_timestamp) {
 			}
 		})
 
-	}, 3000);
+	}, 10000);
 
 	// remove from viewerlist
 	$(window).on("beforeunload", function() {
@@ -299,7 +327,7 @@ function get_sync_state(video_player) {
 				if(status.response.time != current_video_time) {
 
 					var diff = status.response.time - current_video_time;
-					if(diff > 6 || diff < 0) { // if greater then 30 seconds force seek to the new position
+					if(diff > 12 || diff < 0) { // if greater then 10 seconds force seek to the new position
 						video_player.currentTime(status.response.time);
 						ignore_update = true;
 					}
@@ -336,10 +364,6 @@ $.fn.chat_window = function() {
 
 	var list = $(this).find("ul#chatMessages").first();
 
-	var last_message_id = 0;
-	var written_messages = {};
-
-
 	setInterval(function(){
 
 		var new_message = false;
@@ -352,8 +376,18 @@ $.fn.chat_window = function() {
 			dataType : "json",
 			success : function(status) {
 				if(status.success) {
+
 					for(var message_index in status.response.messages) {
 						var message = status.response.messages[message_index];
+
+				
+						var duplicate_message = false;
+						if(message.message == manual_message && message.username == manual_username) {
+							duplicate_message = true;
+							written_messages[message.message_id] = true;
+							new_message = false;
+						}
+
 						if(typeof written_messages[message.message_id] == "undefined") {
 							last_message_id = message.message_id;
 							var username_color = typeof chatter_colors[message.username] != "undefined" ? chatter_colors[message.username] : assign_random_color(message.username);
@@ -383,7 +417,7 @@ $.fn.chat_window = function() {
 			}
 		});
 
-	}, 500);
+	}, 1300);
 
 	return this;
 }
