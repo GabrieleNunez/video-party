@@ -1,17 +1,17 @@
 <div id="homepage">
 	<div class="padding">
 		<div class="row maximum expanded">
-			<div class="small-12 medium-12 large-8 columns">
+			<div class="small-12 medium-12 large-8 columns" id="videoColumn">
 				<div class="videoplayer" id="videoplayer">
 					<video autoplay playsinline playinline data-stream-file="<?php echo $player_stream_file;?>" data-current="<?php echo $player_time; ?>" class="video-js <?php echo $ticket_master ? '' : 'watcher'; ?>" preload="auto" controls="controls" <?php echo $ticket_master ? 'data-master="1"' : 'data-master="0"'; ?>>
 						<source src="<?php echo $player_stream_file; ?>" type="application/x-mpegURL"></source>
 					</video>
 				</div>
 			</div>
-			<div class="small-12 medium-12 large-4 columns">
+			<div class="small-12 medium-12 large-4 columns" id="chatColumn">
 				<div id="chatwindow">
 					<div class="stat-bar">
-						<div class="row small-up-2 medium-up-4 large-up-4">
+						<div class="row small-up-2 medium-up-2 large-up-2">
 							<div class="column column-block">
 								<a href="#" href="/chat" id="chatButton" class="button expanded slide-button" data-slide="chat-slide">Chat</a>
 							</div>

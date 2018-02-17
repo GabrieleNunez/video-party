@@ -80,7 +80,7 @@ hr { max-width: 75rem; }
 
 
 /* video player settings */
-div.video-js { width:100%; max-width:1280px; max-height:720px; }
+div.video-js { width:100%; max-width:1280px; max-height:720px; margin:0 auto; margin-bottom:2rem; }
 div.video-js.watcher button.vjs-play-control,
 div.video-js.watcher div.vjs-progress-control { display:none; }
 
@@ -109,6 +109,13 @@ ul#viewerlist { margin:0; padding:0;  list-style: none; color: #ebebeb; padding:
 form#loginForm {  width:100%; max-width:35rem; display:block; margin:0 auto; background-color: #ebebeb; color: black; margin:2rem auto; padding: 1rem; }
 form#loginForm label,
 form#loginForm h4 { color: black; }
+
+
+@media only screen and (max-width:1680px) {
+	div.padding { padding:0; }
+	div#videoColumn,
+	div#chatColumn { max-width:100%; width:100%; flex:100%; }
+}
 
 /* tablet only */
 @media only screen and (min-width:40.063em) and (max-width:64em) {
