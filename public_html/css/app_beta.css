@@ -1,0 +1,167 @@
+/* google fonts import */
+/*@import url('https://fonts.googleapis.com/css?family=Oswald|Oxygen|Roboto|Roboto+Condensed|Open+Sans'); */
+
+
+html, body { margin:0; padding:0; border:none; width:100%; height:100%; font-size:16px; position:relative; top:0; background-color: #080808; }
+
+a { color : #0000FF; }
+a:hover { text-decoration: underline; color: #0000FF; }
+
+/* generic styles  for foundation */
+div.maximum { width:100%;  }
+div.row.maximum { width:100%; max-width:110rem; }
+div.wrap { position:relative; }
+.row .row { max-width:100%; }
+
+div#wrapper { position:relative; height:100%; width:100%; overflow:hidden; }
+
+/* form styling */
+form h4 { text-align:center; color: #ebebeb; }
+form label { text-align:left; display:block; font-size: 1.2rem; color:#ebebeb; }
+form input { font-size: 1.2rem; }
+form p.error { margin:0; padding: 0; margin-top: .1rem; margin-bottom: 1rem; color: #C53200 !important; }
+form div.field-error input,
+form div.field-error select,
+form div.field-error textarea { margin:0;  }
+
+/* clearing class */
+div.clear { clear: both; content:" "; display:table; }
+
+/* navigation menu styles */
+div.navigation-menu {  max-width: 1024px; }
+div.navigation-menu div.logo { display:block; float:left; }
+div.navigation-menu div.logo img { display:block; height:100%;  margin:0 auto; max-height: 5.25rem; }
+div.navigation-menu ul.nav-menu { display:block; float:left; margin:0 auto; padding:0; list-style:none; text-align:left; }
+div.navigation-menu ul.nav-menu li { display:inline-block; margin: 0 .25rem; font-size: 3rem; margin: 0 1rem; font-family: "balboa-plus-fill", sans-serif; border-bottom:solid 1px #ffffff;}
+div.navigation-menu ul.nav-menu li a { display:block;  color :#ffffff; text-decoration:none;  }
+div.navigation-menu ul.nav-menu li a:hover { color: #dd120d;  text-decoration:none; }
+div.navigation-menu ul.nav-menu li:hover { border-color: #dd120d; }
+div.navigation-menu ul.nav-menu li a.active { color: #dd120d; }
+div.navigation-menu ul.nav-menu li a.active:hover { color:#ffffff; }
+div.navigation-menu ul.nav-menu li.social-link { font-size: 2rem; }
+
+/* button styling  */
+button.success { background-color: #3AAD39; opacity:1.0 !important; }
+button.success:hover,
+button.success:active,
+button.success:focus { background-color: #3AAD6C; }
+button.success:disabled { opacity: 1.0;  }
+
+button.error { background-color : #C53200; }
+button.error:hover,
+button.error:active,
+button.error:focus { background-color : #A12900; }
+
+div.content-section { padding: 2rem 0; }
+
+/* font settings */
+.green { color : #008000;  }
+.red { color: #C53200;  }
+.underline { text-decoration: underline; }
+.italic { font-style: italic; }
+.bold { font-weight: bold; }
+.large { font-size: 200%; }
+.bottom { position:absolute; bottom:0; }
+
+hr { max-width: 75rem; }
+
+/* homepage settings */
+div#videoArea,
+div#videoplayer { width:100%; height:100%; position:relative; top:0; }
+
+/* video player settings */
+div.video-js { position:absolute; top:0; left:0; width:100%; margin:0 auto; height:100%;}
+div.video-js.watcher button.vjs-play-control,
+div.video-js.watcher div.vjs-progress-control { display:none; }
+div.video-js button.vjs-fullscreen-control { display:none; }
+
+button#hideChatButton { background-color: #F1503F; }
+button#hideChatButton:hover { background-color: #9E3429; }
+
+/* chat window settings */
+div#chatArea { position:absolute; top:1%; right: 1%; width: 25rem; height:38.125rem; padding:0 1rem; background-color: rgba(0,0,0,0.65); border-radius: 12px; }
+div#chatWindow { width:99%; height:37.5rem; position:relative; top:0; }
+div#chatBottomControls { width:100%; margin: 0 auto; }
+ul#chatMessages { width:100%; height:25rem; margin:0; padding:0; display:block; overflow:auto;  padding:.25rem 0; margin-top:15px; }
+ul#chatMessages { list-style:none; }
+ul#chatMessages li { word-break: break-all; }
+ul#chatMessages li span.username { color: red; font-weight:bold; }
+ul#chatMessages li span.divider { margin:0 .25rem; }
+ul#chatMessages li span.message { color: #ebebeb; }
+div#chatwindow form#chatForm hr { margin-top:0; }
+
+
+div.padding { padding: 2rem 0; position:relative; top:0; left:0; }
+
+div.stat-bar { display:none; }
+div.slide { display:none; }
+div.slide#chat-slide { display:block; }
+div.slide#viewer-slide {  border:solid 1px white; }
+ul#viewerlist { margin:0; padding:0;  list-style: none; color: #ebebeb; padding:.5rem; min-height: 375px;  max-height: 720px; overflow: auto; }
+
+
+/* login form settings */
+form#loginForm {  width:100%; max-width:35rem; display:block; margin:0 auto; background-color: #ebebeb; color: black; margin:2rem auto; padding: 1rem; }
+form#loginForm label,
+form#loginForm h4 { color: black; }
+
+
+div#hotbar { color:#ffffff; position:absolute; top:1%; right: -100%; width: 20rem; padding: 0 1rem; opacity: .75; }
+div#hotbar:hover { opacity: 1.0;  }
+div#hotbar div.hotbar-button { float:left; width: auto; height: 2.2rem; line-height:2.2rem; margin: 0px .5rem; transition: color 500ms ease; }
+div#hotbar div.hotbar-button i { float:left; }
+div#hotbar div.hotbar-button:hover { cursor: pointer; color: #F6BC48; }
+
+
+div#videoArea[chatonly] div#chatArea { position:relative; width:100%; height:100%; top:0; left:0; right:0; background-color: black; border-radius: 0; }
+div#videoArea[chatonly] div#chatWindow { width:100%; height: 50%; }
+div#videoArea[chatonly] ul#chatMessages { width:100%; max-height:20rem; height:60%; }
+
+div#fullscreenPrompt { position:absolute; top:0; left: 0; width:100%; height:100%; background-color: rgba(0,0,0,.75); z-index:99; padding-top:2%; }
+div#fullscreenPrompt button.button { font-size:2rem; padding-top:4rem; padding-bottom:4rem; }
+
+button#fullScreenButton { background-color: #00850D; }
+button#fullScreenButton:hover { background-color: #005E0D; }
+button#fullScreenCancelButton { background-color: #FF480D;  }
+button#fullScreenCancelButton:hover { background-color: #C9390A; }
+
+
+@media only screen and (max-width:1680px) {
+
+}
+
+/* tablet only */
+@media only screen and (min-width:40.063em) and (max-width:64em) {
+	
+}
+
+/* apply these styles once we hit tablet sizes */
+@media only screen and (max-width: 64em) { 
+
+	div#chatArea {   height: 29.125rem;}
+	div#chatWindow {  height:27.5rem; }
+	ul#chatMessages { height:15rem; font-size: .75rem; }
+
+	div#wrapper { overflow: hidden; } 
+}
+
+/* small only */
+@media only screen and (max-width: 40em) {
+	div.video-js { width:100%; max-width:1280px; max-height: 720px; margin:0 auto; }
+
+	div#hotbar { width:100%;  }
+	div#chatArea {   width:100%; height: 34.125rem;}
+	div#chatWindow { width:100%; height:32.5rem; }
+	ul#chatMessages { height:20rem; margin-top:0; }
+
+	div#wrapper { overflow: auto; }
+}
+
+@media only screen and (orientation:landscape) and (max-width: 52em) {
+
+	div#chatArea {  width:100% !important; height:20rem !important; }
+	div#chatWindow { width:100% !important; height:20rem !important; }
+	ul#chatMessages { width:100% !important; height:7rem !important; }
+	div#wrapper { overflow: auto; }
+
+}

@@ -58,7 +58,7 @@ class SiteController extends Controller {
 
 
 		// we are expecting a response
-		$request = new Request('POST', array('code'));
+		$request = new Request('POST', array('code','chatmode_only'));
 		$missing = $request->get_missing();
 		if($missing) {
 			$this->bad_request();
@@ -70,6 +70,11 @@ class SiteController extends Controller {
 		if(strlen($ticket_code) === 0)
 			$this->error('code','Please specify a ticket code');
 
+
+		// if chatonly is present then its true otherwise false ( this is an optional thing )
+		$chatonly = $request->get('chatmode_only') ? true : false;
+
+
 		// no errors lets hit the database
 		if(!$this->has_errors()) {
 			$ticket = Ticket::select(array('id'))->where('code', $ticket_code,'=')->limit(1)->get(true);
@@ -77,6 +82,8 @@ class SiteController extends Controller {
 				$this->error('code','This is not a valid ticket, sorry.');
 			} else {
 				Session::write('ticket_code',$ticket_code);
+				Session::write('chatonly', $chatonly);
+				$this->variable('chatonly',$chatonly);
 				$this->variable('validated',true);
 			}
 		}
@@ -92,6 +99,7 @@ class SiteController extends Controller {
 
 		// set the following variables
 		$this->variable('title', 'Level Crush - Member');
+
 
 		// set the main tab to home
 		$this->variable('maintab','');
@@ -114,7 +122,13 @@ class SiteController extends Controller {
 			}
 		}
 
+		// if we are chatonly mode simply redirect to this url ( note: this works because we have duplicated the below code. This needs to be cleaned up ASAP)
+		if(Session::read('chatonly')) {
+			$this->redirect('/chat');
+		}
+
 		// set ticket code
+		$this->variable('chatonly_mode', Session::read('chatonly') ? true : false);
 		$this->variable('ticket_master', $ticket['master'] ? true : false);
 		$this->variable('ticket_username', $ticket['username']);
 		$this->variable('ticket_code', $ticket_code);
@@ -145,7 +159,11 @@ class SiteController extends Controller {
 		$viewers = Viewer::select(array('tickets.username'))->join('tickets','viewerlist.ticket','tickets.id')->orderBy('tickets.username','ASC')->get(true);
 		$this->variable('viewers', $viewers);
 
-		$this->content_view('/site/home.php');
+
+		// determine which view to show based on our session information
+		$content_view = Session::read('chatonly') ? '/site/chatonly.php' : '/site/videoplayer.php';
+		$this->content_view($content_view);
+		
 		$this->render_template();
 
 
@@ -155,39 +173,102 @@ class SiteController extends Controller {
 	// 
 	public function chat_get($in) {
 
-		$last_message_id = 0;
-		
-		$request = new Request('GET');
-		$last_message_id = $request->get('last_message_id');
-		if(!$last_message_id) 
+
+		if(Request::isAjax()) {
+
 			$last_message_id = 0;
-		
-		// load messages
-		$messages = array();
-		$message = new ChatMessage();
+			
+			$request = new Request('GET');
+			$last_message_id = $request->get('last_message_id');
+			if(!$last_message_id) 
+				$last_message_id = 0;
+			
+			// load messages
+			$messages = array();
+			$message = new ChatMessage();
 
-		$messages = ChatMessage::raw('
-									SELECT * FROM
-									(
-										SELECT 
-											tickets.username, 
-											chat_messages.id AS message_id, 
-											chat_messages.message,
-											chat_messages.created_at
-										 FROM chat_messages
-										 INNER JOIN tickets ON chat_messages.ticket = tickets.id
-										 WHERE tickets.deleted_at = 0 
-										 AND chat_messages.deleted_at = 0
-										 AND chat_messages.id > "'.Database::escape($last_message_id).'"
-										 ORDER BY chat_messages.id DESC
-										 LIMIT 30
-									) AS messages
-									ORDER BY message_id ASC
-									');
+			$messages = ChatMessage::raw('
+										SELECT * FROM
+										(
+											SELECT 
+												tickets.username, 
+												chat_messages.id AS message_id, 
+												chat_messages.message,
+												chat_messages.created_at
+											 FROM chat_messages
+											 INNER JOIN tickets ON chat_messages.ticket = tickets.id
+											 WHERE tickets.deleted_at = 0 
+											 AND chat_messages.deleted_at = 0
+											 AND chat_messages.id > "'.Database::escape($last_message_id).'"
+											 ORDER BY chat_messages.id DESC
+											 LIMIT 30
+										) AS messages
+										ORDER BY message_id ASC
+										');
+			for($i = 0; $i < count($messages); $i++) {
+				$messages[$i]['message']  = htmlspecialchars($messages[$i]['message'], ENT_QUOTES);
+			}
+
+			$this->variable('messages', $messages);
+			$this->render_json();
+
+		} else { // show chat only mode NOTE: THIS NEEDS TO BE REDONE CLEANLY, THIS IS COPY PASTED AND SLIGHTLY MODIFIED FROM ABOVE
+			
+			// set the following variables
+			$this->variable('title', 'Level Crush - Member');
+			$this->variable('maintab','chat');
+
+			// make sure we are loaded with a valid ticket
+			$ticket = array();
+			$ticket_code = Session::read('ticket_code');
+			if($ticket_code === false) {
+				
+				$this->redirect('/login');
+				exit;
+
+			} else {
+
+				$ticket = Ticket::select(array('id','code','username','master'))->where('code',$ticket_code,'=')->limit(1)->get(true);
+				if(!$ticket) {
+					$this->redirect('/login');
+					exit;
+				}
+			}
+
+			// set ticket code
+			$this->variable('chatonly_mode', true);
+			$this->variable('ticket_master', $ticket['master'] ? true : false);
+			$this->variable('ticket_username', $ticket['username']);
+			$this->variable('ticket_code', $ticket_code);
 
 
-		$this->variable('messages', $messages);
-		$this->render_json();
+			// player sync
+			$player_sync = PlayerSync::select(array('*'))->limit(1)->get(true);	
+			$this->variable('player_state', $player_sync['state']);
+			$this->variable('player_time', $player_sync['current']);
+			$this->variable('player_stream_file', $player_sync['stream_file']);
+
+			// make sure to add them into the watcher list 
+			$viewer = Viewer::select(array('viewerlist.id'))->where('viewerlist.ticket', $ticket['id'])->limit(1)->get(true);
+			if(!$viewer) {
+
+				$viewer = new Viewer();
+				$viewer->assign(array(
+					'id' => null,
+					'ticket' => $ticket['id']
+				));
+				$viewer->save();
+
+			} 
+
+			// pull all viewers 
+			$viewers = Viewer::select(array('tickets.username'))->join('tickets','viewerlist.ticket','tickets.id')->orderBy('tickets.username','ASC')->get(true);
+			$this->variable('viewers', $viewers);
+			$this->content_view('/site/chatonly.php');
+			
+			$this->render_template();
+
+		}
 	}
 
 	//

@@ -16,17 +16,18 @@
 		<link href="/css/foundation.min.css" type="text/css" rel="stylesheet" type="text/css" />
 		<link href="/css/foundation-icons/foundation-icons.css" rel="stylesheet" type="text/css" />
 		 <link href="http://vjs.zencdn.net/6.6.3/video-js.css" rel="stylesheet">
-		<link href="/css/app.css" type="text/css" rel="stylesheet" />
+		<link href="/css/app_beta.css" type="text/css" rel="stylesheet" />
 
 		<script src="http://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
 
 	</head>
 	<body>
 		<!-- version - <?php echo \Library\Application::setting('debug') ? 'development' : 'production'; ?> -->
+		<!--
 		<div class="off-canvas-wrapper">
 			<div class="off-canvas position-left" id="offCanvas" data-off-canvas>
 				<ul class="vertical menu">
-					<?php echo \Library\View::make('/templates/navigation.php')->with(array('maintab' => $maintab)); ?>
+					<?php /*echo \Library\View::make('/templates/navigation.php')->with(array('maintab' => $maintab)); */ ?>
 				</ul>
 			</div>
 			<div class="off-canvas-content" data-off-canvas-content>
@@ -43,3 +44,5 @@
 						</div>
 					</div>
 					<div id="content">
+		--> 
+		<div id="wrapper">
