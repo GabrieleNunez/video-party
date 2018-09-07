@@ -47,7 +47,7 @@ class SiteController extends Controller {
 
 		}
 
-		$this->variable('title','Level Crush - Member Lounge Login');
+		$this->variable('title','Video Party Login');
 		$this->variable('maintab', 'login');
 		$this->content_view('/site/login.php');
 		$this->render_template();
@@ -98,7 +98,7 @@ class SiteController extends Controller {
 	public function home_get($in) {
 
 		// set the following variables
-		$this->variable('title', 'Level Crush - Member');
+		$this->variable('title', 'Video Party - Member');
 
 
 		// set the main tab to home
