@@ -4,7 +4,7 @@
 			'host' => 'localhost',
 			'user' => 'developer',
 			'pass' => '',
-			'database' => 'movietime'
+			'database' => 'videoparty'
 		)
 	);
 ?>

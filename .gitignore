@@ -4,3 +4,5 @@ access.log
 logs/*
 *.ts
 *.m3u8
+
+/App/Conf/env.php
