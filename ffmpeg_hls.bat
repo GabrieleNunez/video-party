@@ -1,1 +1,1 @@
-ffmpeg -i  "D:\transcode\encoding_handbrake\HarryPotter_GobletOfFIre.mp4" -codec: copy -start_number 0 -hls_time 10 -hls_list_size 0 -f hls "D:\transcode\joja\sdvrules.m3u8"
+ffmpeg -i  "SampleMoviee.mp4" -codec: copy -start_number 0 -hls_time 10 -hls_list_size 0 -f hls "SampleMoviee.m3u8"
