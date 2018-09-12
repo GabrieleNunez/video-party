@@ -1,5 +1,5 @@
 
-<div id="videoArea">
+<div id="videoArea" class="chat">
 	<div class="videoplayer" id="videoplayer">
 		<video autoplay playsinline playinline data-stream-file="<?php echo $player_stream_file;?>" data-current="<?php echo $player_time; ?>" class="video-js <?php echo $ticket_master ? '' : 'watcher'; ?>" preload="auto" controls="controls" <?php echo $ticket_master ? 'data-master="1"' : 'data-master="0"'; ?>>
 			<source src="<?php echo $player_stream_file; ?>" type="application/x-mpegURL"></source>

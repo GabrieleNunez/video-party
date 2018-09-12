@@ -38,6 +38,11 @@ var chat_colors = [
 
 var chatter_colors = {};
 
+var GAMEPADS_CONNECTED = {};
+var GAMEPAD_ACTIVE = null;
+
+
+
 
 $(document).ready(function(){
 
@@ -45,8 +50,11 @@ $(document).ready(function(){
 	$(document).foundation();
 
 
+	/*
 	if(WEB_DEVICE === WEB_DEVICE_XBOXONE)
-		hook_gamepad();
+		$.gamepad(); */
+	
+
 
 	// home page scripts
 	if($("div#videoArea").length > 0) {
@@ -58,6 +66,24 @@ $(document).ready(function(){
 			hide_chatwindow();
 			hide_hotbar();
 		} */
+
+
+		var gamepad = new Gamepad();
+
+		gamepad.on('connect', function(event){
+			console.log("Controller Connected");
+		});
+
+		gamepad.on('press','button_3', function() {
+			console.log("Toggling chat window and hot bar appropriatly");
+			if($('div#videoArea').hasClass('chat')) {
+				hide_chatwindow();
+				show_hotbar();
+			} else {
+				show_chatwindow();
+				hide_hotbar();
+			}
+		});
 
 		// video js
 		$("video.video-js").each(function(index, item) {
@@ -254,6 +280,9 @@ function hide_chatwindow() {
 	}, 500, function() {
 		//$("div#chatArea").
 	});
+
+
+	$('div#videoArea').removeClass('chat');
 }
 
 function show_chatwindow() {
@@ -262,6 +291,8 @@ function show_chatwindow() {
 		position: "absolute",
 		right : '1%'
 	}, 500);
+
+	$('div#videoArea').addClass('chat');
 }
 
 function show_hotbar() {
@@ -270,6 +301,8 @@ function show_hotbar() {
 		position: "absolute",
 		right : "1%"
 	}, 500);
+
+	$('div#videoArea').addClass('hotbar');
 
 }
 
@@ -280,23 +313,10 @@ function hide_hotbar() {
 		right : "-100%"
 	}, 500);
 
-}
-
-
-// hook into an xbox one controller via Gamepad API
-// this will need to be hooked into the next version No tiume for it. Ouch oh well
-function hook_gamepad() {
-
-
-	window.addEventListener('gamepadconnected', function(event){
-
-	});
-
-	window.addEventListener('gamepaddisconnected', function(event) {
-
-	});
+	$('div#videoArea').removeClass('hotbar');
 
 }
+
 
 // create a syncronized player
 $.fn.sync_player = function(video_player, is_master, current_timestamp) {
@@ -575,7 +595,6 @@ $.fn.chat_window = function() {
 
 	return this;
 }
-
 
 // adjust a button to indictate success
 $.fn.button_success = function(textoutput, disabled) {
