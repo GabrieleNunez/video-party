@@ -19,6 +19,15 @@ Router::get('/logout','SiteController@logout_get');
 Router::get('/viewerlist','SiteController@viewerlist_get');
 Router::post('/viewerlist','SiteController@viewerlist_post');
 
+// Manager routes
+Router::get('/manager','ManagerController@manager_get');
+Router::get('/manager/videos','ManagerController@videos_get');
+Router::get('/manager/videos','ManagerController@videos_post');
+Router::get('/manager/playlist','ManagerController@playlist_get');
+Router::get('/manager/playlist','ManagerController@playlist_post');
+
+
+
 // Generic bad route exception
 ErrorHandler::Hook('RouteException', function($exception) {
 	if(Request::isAjax()){
