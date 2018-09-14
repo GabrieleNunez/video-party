@@ -1,14 +1,4 @@
-		<!--
-						</div>
-						<div id="footer">
-							
-						<div class="clear"></div>
-					</div>
-				</div>
-			</div>
-		</div>
 
-	-->
 		</div>
 		
 		<script src="/js/vendor/jquery.js" type="text/javascript"></script>
