@@ -15,9 +15,12 @@
 		<!-- style sheets -->
 		<link href="/css/foundation.min.css" type="text/css" rel="stylesheet" type="text/css" />
 		<link href="/css/foundation-icons/foundation-icons.css" rel="stylesheet" type="text/css" />
-		 <link href="http://vjs.zencdn.net/6.6.3/video-js.css" rel="stylesheet">
+		<link href="http://vjs.zencdn.net/6.6.3/video-js.css" rel="stylesheet">
 		<link href="/css/app_beta.css" type="text/css" rel="stylesheet" />
-
+		
+		<?php if($maintab == 'manager') { ?>
+			<link href="/css/manager.css" type="text/css" rel="stylesheet" rev="stylesheet" />
+		<?php } ?>
 		<script src="http://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
 
 	</head>

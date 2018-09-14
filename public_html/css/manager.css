@@ -1,2 +1,4 @@
-/* CSS code specifically for the manager portion of this adventure */
-
+/* CSS code specifically for the manager portion of this adventure *//* login form settings */
+form {  width:100%; max-width:80rem; display:block; margin:0 auto; background-color: #ebebeb; color: black; margin:2rem auto; padding: 1rem; }
+form label,
+form h4 { color: black; }

@@ -41,16 +41,25 @@ div.navigation-menu ul.nav-menu li a.active:hover { color:#ffffff; }
 div.navigation-menu ul.nav-menu li.social-link { font-size: 2rem; }
 
 /* button styling  */
-button.success { background-color: #3AAD39; opacity:1.0 !important; }
+button.success,
+button.positive { background-color: #3AAD39; opacity:1.0 !important; }
 button.success:hover,
+button.positive:hover,
 button.success:active,
-button.success:focus { background-color: #3AAD6C; }
-button.success:disabled { opacity: 1.0;  }
+button.positive:active,
+button.success:focus,
+button.positive, { background-color: #3AAD6C; }
+button.success:disabled,
+button.positive:disabled { opacity: 1.0;  }
 
-button.error { background-color : #C53200; }
+button.error,
+button.negative { background-color : #C53200; }
 button.error:hover,
+button.negative:hover,
 button.error:active,
-button.error:focus { background-color : #A12900; }
+button.negative:active,
+button.error:focus,
+button.negative:focus { background-color : #A12900; }
 
 div.content-section { padding: 2rem 0; }
 
