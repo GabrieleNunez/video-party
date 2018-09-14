@@ -149,14 +149,18 @@ class SiteController extends Controller {
 			$viewer = new Viewer();
 			$viewer->assign(array(
 				'id' => null,
-				'ticket' => $ticket['id']
+				'ticket' => $ticket['id'],
+				'ping' => $_SERVER['REQUEST_TIME']
 			));
 			$viewer->save();
 
 		} 
 
+		// define our ping limit
+		$ping_limit = $_SERVER['REQUEST_TIME'] - 60; // our current request time minus 10 seconds
+
 		// pull all viewers 
-		$viewers = Viewer::select(array('tickets.username'))->join('tickets','viewerlist.ticket','tickets.id')->orderBy('tickets.username','ASC')->get(true);
+		$viewers = Viewer::select(array('tickets.username'))->join('tickets','viewerlist.ticket','tickets.id')->where('viewerlist.ping',$ping_limit,'>=')->orderBy('tickets.username','ASC')->get(true);
 		$this->variable('viewers', $viewers);
 
 
@@ -397,9 +401,16 @@ class SiteController extends Controller {
 			exit;
 		}
 
+		// ping the current viewer in the viewerlist
+		$viewer = Viewer::select(array('*'))->where('viewerlist.ticket', $ticket['id'])->limit(1)->get();
+		$viewer->ping = $_SERVER['REQUEST_TIME'];
+		$viewer->save();
+
+
+		$ping_limit = $_SERVER['REQUEST_TIME'] - 60; // our current request time minus 60 seconds
 
 		// pull all viewers 
-		$viewers = Viewer::select(array('tickets.username'))->join('tickets','viewerlist.ticket','tickets.id')->orderBy('tickets.username','ASC')->get(true);
+		$viewers = Viewer::select(array('tickets.username'))->join('tickets','viewerlist.ticket','tickets.id')->where('viewerlist.ping',$ping_limit,'>=')->orderBy('tickets.username','ASC')->get(true);
 		$this->variable('viewers', $viewers);
 
 
@@ -426,7 +437,7 @@ class SiteController extends Controller {
 		}
 
 
-		// if we are 
+		// if we are watching create a new viewer
 		if($request->get('state') == 'watching') {
 			
 			$viewer = Viewer::select(array('viewerlist.id'))->where('viewerlist.ticket', $ticket['id'])->limit(1)->get(true);
@@ -435,7 +446,8 @@ class SiteController extends Controller {
 				$viewer = new Viewer();
 				$viewer->assign(array(
 					'id' => null,
-					'ticket' => $ticket['id']
+					'ticket' => $ticket['id'],
+					'ping' => $_SERVER['REQUEST_TIME']
 				));
 				$viewer->save();
 
