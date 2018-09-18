@@ -1,4 +1,27 @@
+
 /* CSS code specifically for the manager portion of this adventure *//* login form settings */
-form {  width:100%; max-width:80rem; display:block; margin:0 auto; background-color: #ebebeb; color: black; margin:2rem auto; padding: 1rem; }
+form {  width:100%; max-width:100%; margin:0; background-color: unset; margin: 0 auto; padding: unset; }
 form label,
 form h4 { color: black; }
+
+
+/* develop section css */
+div.section > h4 { text-align:center;  }
+div.section {  width:100%; max-width:80rem; display:block; margin:0 auto; background-color: #ebebeb; color: black; margin:2rem auto; padding: 1rem; }
+div.section div.headers span { text-decoration: underline; font-weight: bold; font-size: 1.2rem; }
+div.section form button i { font-size: 1.5rem; color: #0DCAFF; margin-left: 1rem }
+div.section form button:first-of-type i { margin-left:0; }
+div.section form button i:hover { cursor: pointer; color: #0D92FF; }
+div.section form button { background-color: none; }
+
+/* form editing actions */
+div.editing-action,
+input.editing-element { display:none; }
+
+/* when we are in editing mode display these elements */
+form.editing div.editing-action,
+form.editing input.editing-element { display:block; }
+
+/* when we are in editing mode HIDE these elements */
+form.editing div.primary-action,
+form.editing span.primary-element { display:none; }

@@ -22,15 +22,15 @@ Router::post('/viewerlist','SiteController@viewerlist_post');
 // Manager routes
 Router::get('/manager','ManagerController@manager_get');
 Router::get('/manager/videos','ManagerController@videos_get');
-Router::get('/manager/videos','ManagerController@videos_post');
+Router::post('/manager/videos','ManagerController@videos_post');
 Router::get('/manager/playlist','ManagerController@playlist_get');
-Router::get('/manager/playlist','ManagerController@playlist_post');
+Router::post('/manager/playlist','ManagerController@playlist_post');
 Router::get('/manager/player','ManagerController@player_get');
-Router::get('/manager/player','ManagerController@player_post');
+Router::post('/manager/player','ManagerController@player_post');
 Router::get('/manager/chat','ManagerController@chat_get');
-Router::get('/manager/chat','ManagerController@chat_post');
-Router::get('/manager/tickets', 'ManagerController@tickets_get');
-Router::get('/manager/tickets', 'ManagerController@tickets_post');
+Router::post('/manager/chat','ManagerController@chat_post');
+// Router::get('/manager/tickets', 'ManagerController@tickets_get'); For now there is no need to have a route to a GET varient of tickets
+Router::post('/manager/tickets', 'ManagerController@tickets_post');
 
 
 

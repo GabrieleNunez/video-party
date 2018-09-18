@@ -456,6 +456,11 @@ $.fn.ajaxForm = function(callbacks) {
 
 	var self = this;
 
+	// if we have our ajax form class already we actually need to "off" our functions and reset it
+	if($(self).hasClass('ajax-form')) {
+		$(self).off('submit');
+	}
+
 	// default callbacks 
 	var default_callbacks = {
 		success : function(response) {},
@@ -476,6 +481,9 @@ $.fn.ajaxForm = function(callbacks) {
 	// store text state of the submit button
 	var submit_button = $(self).find("button[type='submit']");
 	$(submit_button).data("initial-text", $(submit_button).text());
+
+	// add a class to indicate this is being handled by the ajax form plugin
+	$(self).addClass("ajax-form");
 
 
 	// cover submissions
