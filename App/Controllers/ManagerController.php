@@ -43,6 +43,9 @@ class ManagerController extends Controller {
 			}
 		}
 
+		// grab all tickets from database
+		$tickets = Ticket::select(array('*'))->where('deleted_at',0,'=')->get(true);
+		$this->variable('tickets', $tickets);
 
 		$this->variable('title','');
 		$this->variable('maintab','manager');

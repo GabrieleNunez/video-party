@@ -23,21 +23,23 @@
 				<span class="header">Actions</span>
 			</div>
 		</div>
-		<div class="row ticket">
-			<div class="small-12 medium-4 large-4 columns">
-				<span class="ticket-user">Username Here</span>
+		<?php foreach($tickets as $ticket) { ?>
+			<div class="row ticket" data-ticket="<?php echo $ticket['id'];?>">
+				<div class="small-12 medium-4 large-4 columns">
+					<span class="ticket-user"><?php echo $ticket['username']; ?></span>
+					<input type="text" class="ticket-user" value="<?php echo $ticket['username']; ?>" name="ticket_user[<?php echo $ticket['id'];?>]" id="ticket_user[<?php echo $ticket['id'];?>]" style="display:none;" />
+				</div>
+				<div class="small-12 medium-4 large-4 columns">
+					<span class="ticket-code"><?php echo $ticket['code']; ?></span>
+				</div>
+				<div class="small-12 medium-2 large-2 columns">
+					<button class="button expanded positive" type="button" data-action="edit"><i class="fi-pencil large"></i></button>
+				</div>
+				<div class="small-12 medium-2 large-2 columns">
+					<button class="button expanded negative" type="button" data-action="delete"><i class="fi-x large"></i></button>
+				</div>
 			</div>
-			<div class="small-12 medium-4 large-4 columns">
-				<span class="ticket-code">Code Here</span>
-			</div>
-			<div class="small-12 medium-2 large-2 columns">
-				<button class="button expanded positive" type="button" data-action="edit"><i class="fi-pencil large"></i></button>
-			</div>
-			<div class="small-12 medium-2 large-2 columns">
-				<button class="button expanded negative" type="button" data-action="delete"><i class="fi-x large"></i></button>
-			</div>
-		</div>
-
+		<?php } ?>
 	</form>
 
 	<!-- the video form handles updating videos on the server -->
