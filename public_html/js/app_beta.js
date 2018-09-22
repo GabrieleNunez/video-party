@@ -43,6 +43,35 @@ var GAMEPAD_ACTIVE = null;
 
 
 
+// for
+var COMMAND_CALLBACKS = {
+	'stop' : function(arguments, is_master) {
+		if(is_master) {	
+			videoplayer_stop();
+			return true;
+		} else { 
+			return false;
+		}
+	},
+	'play' : function(arguments, is_master) {
+		if(is_master) {
+			videoplayer_play();
+			return true;
+		} else { 
+			return false;
+		}
+	},
+	'clear' : function(arguments, is_master) {
+		if(is_master) {
+			chatwindow_clear();
+			return true;
+		} else {
+			return false;
+		}
+	}
+}
+
+
 
 $(document).ready(function(){
 
@@ -531,6 +560,25 @@ function assign_random_color(username) {
 	var color =  chat_colors[Math.floor(Math.random()*chat_colors.length)];
 	chatter_colors[username] = color;
 	return color;
+}
+
+// play the video player, t
+function videoplayer_play() {
+
+	// TODO: needs implementation
+}	
+
+// stop the videoplayer
+function videoplayer_stop() {
+
+	// TODO: this needs implementation
+
+}
+
+// clear the window and purge the database of messages
+// ONLY works when the ticket is master
+function chatwindow_clear() {
+	// TODO this needs implementation
 }
 
 // wrap a chat window into one jquery plugin
