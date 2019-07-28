@@ -187,8 +187,8 @@ class Model {
 			$statement .= $records;
 			
 			$results = $sql->query($statement);
-			if($this->sql->errno){
-				echo $this->sql->error;
+			if($sql->errno){
+				echo $sql->error;
 			}
 		} else{
 			return true;

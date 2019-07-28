@@ -6,5 +6,4 @@ use Library\Model;
 class ChatMessage extends Model {
 	public $table = 'chat_messages';
 }
-
 ?>

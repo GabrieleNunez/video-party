@@ -29,7 +29,7 @@ class Hash {
 	// Set the cost factor
 	public static function setRounds($rounds) {
 		self::$rounds = (int)$rounds;
-		return $this;
+		return self::$rounds;
 	}
 
 	// generates a quick 40 character hash

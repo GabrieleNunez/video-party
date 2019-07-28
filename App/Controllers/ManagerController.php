@@ -156,7 +156,6 @@ class ManagerController extends Controller {
 				$assigned_ticket = Ticket::select(array('*'))->where('id', $ticket_id,'=')->limit(1)->get();
 				$assigned_ticket->delete('id', $assigned_ticket->id);
 				$assigned_ticket = $assigned_ticket->to_array();
-
 			}
 
 
@@ -174,6 +173,8 @@ class ManagerController extends Controller {
 			'ticket_delete' =>  $ticket_delete ? true : false,
 			'ticket_new' => $ticket_new ? true : false
 		));
+
+		
 
 		$this->render_json();
 	}
