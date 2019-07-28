@@ -6,4 +6,4 @@ logs/*
 *.m3u8
 *.bat
 
-/App/Conf/env.php
+App/Conf/env.php
