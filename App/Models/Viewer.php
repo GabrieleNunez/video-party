@@ -2,7 +2,7 @@
 
 use Library\Model;
 
-
-class Viewer extends Model { 
-	public $table = 'viewerlist';
+class Viewer extends Model
+{
+    public $table = 'viewerlist';
 }

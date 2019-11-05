@@ -1,11 +1,17 @@
 
 <div id="videoArea" class="chat">
 	<div class="videoplayer" id="videoplayer">
-		<video autoplay playsinline playinline data-stream-file="<?php echo $player_stream_file;?>" data-current="<?php echo $player_time; ?>" class="video-js <?php echo $ticket_master ? '' : 'watcher'; ?>" preload="auto" controls="controls" <?php echo $ticket_master ? 'data-master="1"' : 'data-master="0"'; ?>>
+		<video autoplay playsinline playinline data-stream-file="<?php echo $player_stream_file; ?>" data-current="<?php echo $player_time; ?>" class="video-js <?php echo $ticket_master
+    ? ''
+    : 'watcher'; ?>" preload="auto" controls="controls" <?php echo $ticket_master
+    ? 'data-master="1"'
+    : 'data-master="0"'; ?>>
 			<source src="<?php echo $player_stream_file; ?>" type="application/x-mpegURL"></source>
 		</video>
 		<div id="hotbar">
-			<div class="hotbar-button" id="viewersButton" title="Viewers"><i class="fi-eye large"></i> <span id="viewers"><?php echo count($viewers); ?></span></div>
+			<div class="hotbar-button" id="viewersButton" title="Viewers"><i class="fi-eye large"></i> <span id="viewers"><?php echo count(
+       $viewers
+   ); ?></span></div>
 			<div class="hotbar-button" id="showChatButton" title="View Chat"><i class="fi-comments large"></i><span id="newComments"></span></div>
 			<div class="hotbar-button" id="chatPopupButton" title="Pop out Chat"><i class="fi-page-edit large"></i></div>
 			<div class="hotbar-button" id="reloadPageButton" title="Reload Page" onclick="window.location.reload(true);"><i class="fi-refresh large large"></i></div>
@@ -29,8 +35,8 @@
 				</div>
 				<div id="viewer-slide" class="slide">
 					<ul id="viewerlist">
-						<?php foreach($viewers as $viewer) { ?>
-							<li data-username="<?php echo $viewer['username'];?>"><?php echo $viewer['username']; ?></li>
+						<?php foreach ($viewers as $viewer) { ?>
+							<li data-username="<?php echo $viewer['username']; ?>"><?php echo $viewer['username']; ?></li>
 						<?php } ?>
 					</ul>
 				</div>

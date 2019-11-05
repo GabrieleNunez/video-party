@@ -1,0 +1,25 @@
+{
+  "name": "video-party",
+  "version": "1.0.0",
+  "description": "Make it easy to watch video/content together",
+  "main": ".eslintrc.js",
+  "dependencies": {
+    "@prettier/plugin-php": "^0.11.2",
+    "eslint": "^6.6.0",
+    "prettier": "^1.18.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GabrieleNunez/video-party.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GabrieleNunez/video-party/issues"
+  },
+  "homepage": "https://github.com/GabrieleNunez/video-party#readme"
+}

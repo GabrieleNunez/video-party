@@ -25,12 +25,10 @@
 				<span class="header">Actions</span>
 			</div>
 		</div>
-		<?php 
-			// render our ticket using the ticket template, this way it's consistent with what we can send back from the server
-			foreach($tickets as $ticket) { 
-				echo \Library\View::make('/manager/ticket.php')->with(array('ticket' => $ticket));
-			}
-		?>
+		<?php // render our ticket using the ticket template, this way it's consistent with what we can send back from the server
+  foreach ($tickets as $ticket) {
+      echo \Library\View::make('/manager/ticket.php')->with(array('ticket' => $ticket));
+  } ?>
 		<form action="/manager/tickets" method="POST" class="editing new-form">
 			<input type="hidden" name="ticket_id" value="0" />
 			<div class="row ticket editing" data-ticket="0">

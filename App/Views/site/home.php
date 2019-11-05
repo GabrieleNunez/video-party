@@ -3,7 +3,11 @@
 		<div class="row maximum expanded">
 			<div class="small-12 medium-12 large-8 columns" id="videoColumn">
 				<div class="videoplayer" id="videoplayer">
-					<video autoplay playsinline playinline data-stream-file="<?php echo $player_stream_file;?>" data-current="<?php echo $player_time; ?>" class="video-js <?php echo $ticket_master ? '' : 'watcher'; ?>" preload="auto" controls="controls" <?php echo $ticket_master ? 'data-master="1"' : 'data-master="0"'; ?>>
+					<video autoplay playsinline playinline data-stream-file="<?php echo $player_stream_file; ?>" data-current="<?php echo $player_time; ?>" class="video-js <?php echo $ticket_master
+    ? ''
+    : 'watcher'; ?>" preload="auto" controls="controls" <?php echo $ticket_master
+    ? 'data-master="1"'
+    : 'data-master="0"'; ?>>
 						<source src="<?php echo $player_stream_file; ?>" type="application/x-mpegURL"></source>
 					</video>
 				</div>
@@ -16,7 +20,9 @@
 								<a href="#" href="/chat" id="chatButton" class="button expanded slide-button" data-slide="chat-slide">Chat</a>
 							</div>
 							<div class="column column-block">
-								<a href="#" href="/viewerlist" id="viewerlistButton" class="button expanded slide-button" data-slide="viewer-slide">Viewers:<span id="viewers"><?php echo count($viewers); ?></span></a>
+								<a href="#" href="/viewerlist" id="viewerlistButton" class="button expanded slide-button" data-slide="viewer-slide">Viewers:<span id="viewers"><?php echo count(
+            $viewers
+        ); ?></span></a>
 							</div>
 						</div>
 					</div>
@@ -32,8 +38,8 @@
 					</div>
 					<div id="viewer-slide" class="slide">
 						<ul id="viewerlist">
-							<?php foreach($viewers as $viewer) { ?>
-								<li data-username="<?php echo $viewer['username'];?>"><?php echo $viewer['username']; ?></li>
+							<?php foreach ($viewers as $viewer) { ?>
+								<li data-username="<?php echo $viewer['username']; ?>"><?php echo $viewer['username']; ?></li>
 							<?php } ?>
 						</ul>
 					</div>

@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-require_once('../Library/Application.php');
+require_once '../Library/Application.php';
 
-Library\Application::Initialize(); 
+Library\Application::Initialize();
 ?>

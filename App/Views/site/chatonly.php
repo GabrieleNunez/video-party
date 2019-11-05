@@ -2,7 +2,9 @@
 <div id="videoArea" chatonly>
 	<div class="videoplayer" id="videoplayer">
 		<div id="hotbar" style="display:none">
-			<div  class="hotbar-button" id="viewersButton"><i class="fi-eye large"></i> <span id="viewers"><?php echo count($viewers); ?></span></div>
+			<div  class="hotbar-button" id="viewersButton"><i class="fi-eye large"></i> <span id="viewers"><?php echo count(
+       $viewers
+   ); ?></span></div>
 			<div  class="hotbar-button" id="showChatButton"><i class="fi-comments large"></i><span id="newComments"></span></div>
 			<div class="clear"></div>
 		</div>
@@ -23,8 +25,8 @@
 				</div>
 				<div id="viewer-slide" class="slide">
 					<ul id="viewerlist">
-						<?php foreach($viewers as $viewer) { ?>
-							<li data-username="<?php echo $viewer['username'];?>"><?php echo $viewer['username']; ?></li>
+						<?php foreach ($viewers as $viewer) { ?>
+							<li data-username="<?php echo $viewer['username']; ?>"><?php echo $viewer['username']; ?></li>
 						<?php } ?>
 					</ul>
 				</div>

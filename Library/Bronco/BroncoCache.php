@@ -3,42 +3,42 @@
 use Library\CacheEngines\MemcachedEngine;
 
 // Bronco class that helps load into and out of the current cache system
-class BroncoCache {
-		
-	private static $enable = false;
+class BroncoCache
+{
+    private static $enable = false;
 
-	// enables or disables the cache
-	public static function enable($enable) {
-		self::$enable = $enable;
-	}
-    
-	// determines if the file exist in cache
-	public static function exist($cache_file) {
-		return self::$enable ? file_exists($cache_file)  : false;
-	}
-	
-	// write file into the cache
-	public static function write($contents, $cache_file) {
-		
-		if(self::$enable) {
-    
+    // enables or disables the cache
+    public static function enable($enable)
+    {
+        self::$enable = $enable;
+    }
+
+    // determines if the file exist in cache
+    public static function exist($cache_file)
+    {
+        return self::$enable ? file_exists($cache_file) : false;
+    }
+
+    // write file into the cache
+    public static function write($contents, $cache_file)
+    {
+        if (self::$enable) {
             // write file
-			$handle = fopen($cache_file,'wb+');
-			flock($handle, LOCK_EX);
-			
-			fwrite($handle, $contents);
-			fflush($handle);
+            $handle = fopen($cache_file, 'wb+');
+            flock($handle, LOCK_EX);
 
-			flock($handle, LOCK_UN);
-			fclose($handle);
-            
+            fwrite($handle, $contents);
+            fflush($handle);
+
+            flock($handle, LOCK_UN);
+            fclose($handle);
+
             // write to memcache
-        	//MemcachedEngine::set($cache_file, $contents);    
-		}
+            //MemcachedEngine::set($cache_file, $contents);
+        }
+    }
 
-	}
-    
-    // load from the cache. 
+    // load from the cache.
     /*
     private static function cacheLoad($cache_file) {
         if(!MemcachedEngine::exist($cache_file))
@@ -47,10 +47,10 @@ class BroncoCache {
         return MemcachedEngine::get($cache_file);
     } */
 
-	// read a file from the cache
-	public static function read($cache_file) {
-		return self::$enable ? file_get_contents($cache_file) : '';
-	}
-	
+    // read a file from the cache
+    public static function read($cache_file)
+    {
+        return self::$enable ? file_get_contents($cache_file) : '';
+    }
 }
 ?>
