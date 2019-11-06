@@ -8,3 +8,4 @@ logs/*
 App/Conf/env.php
 App/Conf/database.php
 node_modules
+vendor/*

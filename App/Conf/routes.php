@@ -8,7 +8,6 @@ use Library\Request;
 // define our routes
 
 // Basic Site routes
-
 Router::get('/', 'SiteController@home_get');
 Router::get('/chat', 'SiteController@chat_get');
 Router::post('/chat', 'SiteController@chat_post');
@@ -39,7 +38,11 @@ ErrorHandler::Hook('RouteException', function ($exception) {
         header('Content-type: application/json');
         header('Cache-Control: no-cache, must-revalidate');
         echo json_encode(
-            array('success' => false, 'response' => array(), 'errors' => array('url' => 'This url does not exist')),
+            array(
+                'success' => false,
+                'response' => array(),
+                'errors' => array('url' => 'This url does not exist')
+            ),
             JSON_FORCE_OBJECT
         );
         exit();

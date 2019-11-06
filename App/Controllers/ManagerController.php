@@ -61,6 +61,59 @@ class ManagerController extends Controller
     // adding and converting video logic will go here
     public function videos_post()
     {
+        $request = new Request('POST', array(
+            'video_id',
+            'video_new',
+            'video_title',
+            'video_file',
+            'video_updated',
+            'video_deleted'
+        ));
+
+        $missing = $request->get_missing();
+        if ($missing) {
+            $this->bad_request();
+            exit();
+        }
+
+        $ticket_code = Session::read('ticket_code');
+        if (!$ticket_code !== false) {
+            $ticket = Ticket::select(array('id'))
+                ->where('code', $ticket_code, '=')
+                ->where('master', 1, '=')
+                ->limit(1)
+                ->get(true);
+            if (!$ticket) {
+                $this->redirect('/');
+                exit();
+            }
+        }
+
+        $video_updated = $request->get('video_updated');
+        $video_deleted = $request->get('video_deleted');
+        $video_new = $request->get('video_new');
+
+        $video_id = $request->get('video_id');
+        if (!strlen($video_id)) {
+            $this->error('video_id', 'Please specify a video');
+        }
+
+        $video_title = $request->get('video_title');
+        if (!strlen($video_title)) {
+        }
+
+        $video_file = $request->get('video_file');
+
+        if (!$this->hasErrors()) {
+            $assignedVideo = array();
+            if ($video_new) {
+                $assignedVideo = new Video();
+                $assignedVideo->assign(array(
+                    'id' => null,
+                    'title' => $video_title
+                ));
+            }
+        }
     }
 
     // visually showing the playlist will go here
