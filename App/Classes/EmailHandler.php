@@ -13,7 +13,7 @@ class EmailHandler
     private $email_owner = '';
 
     //private $email_owner = 'gabrielenunez@thecoconutcoder.com'; // for testing only
-    private $email_maintainer = 'gabrielenunez@thecoconutcoder.com';
+    private $email_maintainer = 'gabrielenunez@protonmail.com';
     private $domain = '';
     private $service = null;
     private $copy_maintainer = false;

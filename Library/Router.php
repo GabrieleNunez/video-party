@@ -31,7 +31,6 @@ class Router
         $path = strlen($path) > 1 ? rtrim($path, '/') : $path; //strip the slash at the end of the string (if its there). rtrim will take care of this automatically
         $parts = explode('/', $path);
         self::$active_path_components = $parts;
-
         if ($autoload_routes) {
             self::LoadRoutes();
         }
@@ -46,9 +45,7 @@ class Router
 
         $route = array();
         $parts = explode('/', $url);
-        $level = self::$routes[$method]; // start off our level at our base trunk. Because we are using references, there is no need for me to copy back over results
-
-        reset($parts);
+        $level = &self::$routes[$method]; // start off our level at our base trunk. Because we are using references, there is no need for me to copy back over results
         while (($part = current($parts)) !== false) {
             $identifier = '';
             $is_wildcard = substr($part, 0, 1) == '@';
@@ -66,6 +63,7 @@ class Router
 
         $level['filters'] = $filters;
         $level['*'] = $callback;
+
     }
 
     public static function get($url, $callback, $filters = array())
@@ -99,7 +97,7 @@ class Router
     private static function traverseRoutes()
     {
         $parameters = array(); // Start traversal process. These are the parameters that we will pass
-        $level = self::$routes[self::$active_method]; // same as when we are registering. Grab a reference to our trunk
+        $level = &self::$routes[self::$active_method]; // same as when we are registering. Grab a reference to our trunk
 
         // traverse the tree and determine if we have a valid route
         reset(self::$active_path_components);
@@ -150,6 +148,7 @@ class Router
                 $class = 'App\\Controllers\\' . $callbackParts[0];
                 $function = $callbackParts[1];
                 $controller = new $class();
+
                 return $controller->{$function}($parameters);
             }
         } else {

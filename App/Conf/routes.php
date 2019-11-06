@@ -8,6 +8,7 @@ use Library\Request;
 // define our routes
 
 // Basic Site routes
+
 Router::get('/', 'SiteController@home_get');
 Router::get('/chat', 'SiteController@chat_get');
 Router::post('/chat', 'SiteController@chat_post');
@@ -43,6 +44,12 @@ ErrorHandler::Hook('RouteException', function ($exception) {
         );
         exit();
     } else {
+        $debug = Application::setting('debug');
+        if ($debug) {
+            \Library\Printout::write($exception);
+            exit();
+        }
+
         header('Location: /');
         exit();
     }
